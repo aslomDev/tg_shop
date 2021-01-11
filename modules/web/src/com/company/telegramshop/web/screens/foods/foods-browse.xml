@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://foodsBrowse.caption"
+        focusComponent="foodsesTable"
+        messagesPack="com.company.telegramshop.web.screens.foods">
+    <data readOnly="true">
+        <collection id="foodsesDc"
+                    class="com.company.telegramshop.entity.Foods">
+            <view extends="_local">
+                <property name="file" view="_minimal">
+                    <property name="size"/>
+                    <property name="sysTenantId"/>
+                </property>
+            </view>
+            <loader id="foodsesDl">
+                <query>
+                    <![CDATA[select e from telegramshop_Foods e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="foodsesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="foodsesTable"
+                dataLoader="foodsesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="foodsesTable"
+                    width="100%"
+                    dataContainer="foodsesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="foodName"/>
+                <column id="name"/>
+                <column id="fileSize"/>
+                <column id="file"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="foodsesTable.create"/>
+                <button id="editBtn" action="foodsesTable.edit"/>
+                <button id="removeBtn" action="foodsesTable.remove"/>
+                <button id="sendBtn" caption="msg://send"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

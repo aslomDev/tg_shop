@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+    <persistence-unit name="telegramshop" transaction-type="RESOURCE_LOCAL">
+
+        <class>com.company.telegramshop.entity.User</class>
+        <class>com.company.telegramshop.entity.Foods</class>
+        <class>com.company.telegramshop.entity.SendFoto</class>
+    </persistence-unit>
+</persistence>

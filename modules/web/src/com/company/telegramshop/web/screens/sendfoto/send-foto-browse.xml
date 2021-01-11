@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://sendFotoBrowse.caption"
+        focusComponent="sendFotoesTable"
+        messagesPack="com.company.telegramshop.web.screens.sendfoto">
+    <data readOnly="true">
+        <collection id="sendFotoesDc"
+                    class="com.company.telegramshop.entity.SendFoto">
+            <view extends="sendFoto-view">
+                <property name="file" view="_minimal">
+<!--                <property name="name"/>-->
+                <property name="size"/>
+                </property>
+                <property name="user" view="_minimal">
+                    <property name="userId" />
+                </property>
+            </view>
+            <loader id="sendFotoesDl">
+                <query>
+                    <![CDATA[select e from telegramshop_SendFoto e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="sendFotoesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="sendFotoesTable"
+                dataLoader="sendFotoesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="sendFotoesTable"
+                    width="100%"
+                    dataContainer="sendFotoesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="name"/>
+                <column id="file"/>
+                <column id="user"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="sendFotoesTable.create"/>
+                <button id="editBtn" action="sendFotoesTable.edit"/>
+                <button id="removeBtn" action="sendFotoesTable.remove"/>
+                <button id="sendBtn" caption="msg://send"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

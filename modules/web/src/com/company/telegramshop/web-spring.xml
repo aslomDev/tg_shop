@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:gui="http://schemas.haulmont.com/cuba/spring/cuba-gui.xsd">
+
+    <!-- Annotation-based beans -->
+    <context:component-scan base-package="com.company.telegramshop"/>
+    
+    <gui:screens base-packages="com.company.telegramshop.web"/>
+    <bean id="telegramshop_proxyCreator" class="com.haulmont.cuba.web.sys.remoting.WebRemoteProxyBeanCreator">
+        <property name="serverSelector" ref="cuba_ServerSelector"/>
+        <property name="remoteServices">
+            <map>
+                <entry key="telegramshop_FoodService" value="com.company.telegramshop.service.FoodService"/>
+                <entry key="telegramshop_UserService" value="com.company.telegramshop.service.UserService"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>
