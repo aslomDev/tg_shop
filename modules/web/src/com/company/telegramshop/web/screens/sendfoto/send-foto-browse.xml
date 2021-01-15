@@ -8,8 +8,8 @@
         <collection id="sendFotoesDc"
                     class="com.company.telegramshop.entity.SendFoto">
             <view extends="sendFoto-view">
-                <property name="file" view="_minimal">
-<!--                <property name="name"/>-->
+                <property name="files" view="_minimal">
+                <property name="name"/>
                 <property name="size"/>
                 </property>
                 <property name="user" view="_minimal">

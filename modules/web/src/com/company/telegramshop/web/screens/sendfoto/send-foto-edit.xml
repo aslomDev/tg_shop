@@ -7,7 +7,7 @@
         <instance id="sendFotoDc"
                   class="com.company.telegramshop.entity.SendFoto">
             <view extends="_local">
-                <property name="file" view="_minimal"/>
+                <property name="files" view="_minimal"/>
                 <property name="user" view="_minimal"/>
             </view>
             <loader/>
@@ -26,7 +26,7 @@
         <form id="form" dataContainer="sendFotoDc">
             <column width="350px">
                 <textField id="nameField" property="name"/>
-                <upload id="fileField" fileStoragePutMode="IMMEDIATE" property="file" showFileName="true"/>
+                <upload id="fileField" fileStoragePutMode="IMMEDIATE" property="files" showFileName="true"/>
                 <lookupField optionsContainer="userId" dataContainer="sendFotoDc" id="userField" property="user">
                 </lookupField>
             </column>

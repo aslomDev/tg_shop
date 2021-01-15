@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 
+import java.io.File;
+import java.util.List;
+
 import static jdk.nashorn.internal.codegen.OptimisticTypesPersistence.load;
 
 @UiController("telegramshop_SendFoto.browse")
@@ -31,8 +34,7 @@ public class SendFotoBrowse extends StandardLookup<SendFoto> {
     protected UiComponents uiComponents;
     @Inject
     private GroupTable<SendFoto> sendFotoesTable;
-    @Inject
-    private CollectionContainer<SendFoto> sendFotoesDc;
+
 
 //    @Inject private GroupTable<SendFoto> sendFotoGroupTable;
 
@@ -41,22 +43,8 @@ public class SendFotoBrowse extends StandardLookup<SendFoto> {
 
     @Subscribe("sendBtn")
     public void onSendBtnClick(Button.ClickEvent event) {
-        FileDescriptor fileDescriptor = sendFotoesDc.getItem().getFile();
-
-
-        Image image = smallAvatarImage();
-        image.setSource(FileDescriptorResource.class)
-                .setFileDescriptor(fileDescriptor);
-
-//        dataManager.secure(load(sendFotoesTable.getSingleSelected().getFile());
-
-        System.out.println("filedesc " +  sendFotoesTable.getSingleSelected().getFile());
-
-
+        List<FileDescriptor> fileDescriptor = sendFotoesDl.getContainer().getItem().getFiles();
         userService.sendFoto(sendFotoesDl.getContainer().getItem().getUser().getUserId(), sendFotoesDl.getContainer().getItem().getName(), fileDescriptor );
-//        System.out.println(renderAvatarImageComponent(sendFotoesDc.getItem()));
-//        FileDescriptor fileDescriptor = sendFotoesDc.getItem().getFile();
-//        System.out.println("test " +fileDescriptor);
     }
 
 
@@ -69,7 +57,7 @@ public class SendFotoBrowse extends StandardLookup<SendFoto> {
     }
 
     private Component renderAvatarImageComponent(SendFoto sendFoto) {
-        FileDescriptor imageFile = sendFoto.getFile();
+        List<FileDescriptor> imageFile = sendFoto.getFiles();
 
         if (imageFile == null) {
             return null;
@@ -77,7 +65,8 @@ public class SendFotoBrowse extends StandardLookup<SendFoto> {
 
         Image image = smallAvatarImage();
         image.setSource(FileDescriptorResource.class)
-                .setFileDescriptor(imageFile);
+                .setFileDescriptor((FileDescriptor) imageFile);
+
 
         return image;
     }

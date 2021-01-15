@@ -1,13 +1,15 @@
 package com.company.telegramshop.entity;
 
+import com.haulmont.cuba.core.entity.BaseIntegerIdEntity;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.entity.StandardEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Table(name = "TELEGRAMSHOP_SEND_FOTO")
 @Entity(name = "telegramshop_SendFoto")
-public class SendFoto extends StandardEntity {
+public class SendFoto extends BaseIntegerIdEntity {
     private static final long serialVersionUID = 2139719539667251895L;
 
     @Column(name = "NAME")
@@ -15,20 +17,18 @@ public class SendFoto extends StandardEntity {
 
     private @JoinColumn(name = "file_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    FileDescriptor file;
+    List<FileDescriptor> files;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USER_MSG_ID")
     private User user;
 
-    public SendFoto() {
-    }
-
-    public SendFoto(String name, FileDescriptor file, User user) {
+    public SendFoto(String name, List<FileDescriptor> files, User user) {
         this.name = name;
-        this.file = file;
+        this.files = files;
         this.user = user;
     }
+
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -42,12 +42,12 @@ public class SendFoto extends StandardEntity {
         this.name = name;
     }
 
-    public FileDescriptor getFile() {
-        return file;
+    public List<FileDescriptor> getFiles() {
+        return files;
     }
 
-    public void setFile(FileDescriptor file) {
-        this.file = file;
+    public void setFiles(List<FileDescriptor> files) {
+        this.files = files;
     }
 
     public User getUser() {

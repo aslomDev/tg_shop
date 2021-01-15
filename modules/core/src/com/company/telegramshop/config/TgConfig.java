@@ -1,31 +1,24 @@
 package com.company.telegramshop.config;
 
-import com.company.telegramshop.config.utills.ButtonUtils;
-import com.company.telegramshop.config.utills.CommandUtils;
-import com.company.telegramshop.config.utills.Keybord;
-import com.company.telegramshop.entity.Foods;
+import com.company.telegramshop.config.utills.*;
+import com.company.telegramshop.entity.SendFoto;
 import com.company.telegramshop.service.FoodService;
 import com.company.telegramshop.service.UserService;
-import com.haulmont.cuba.core.entity.FileDescriptor;
+import com.haulmont.cuba.core.global.FileLoader;
+import com.haulmont.cuba.core.global.FileStorageException;
 import com.haulmont.cuba.security.app.Authentication;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Component
@@ -35,7 +28,11 @@ public class TgConfig extends TelegramLongPollingBot {
     @Inject private Keybord keybord;
     @Inject private FoodService foodService;
     @Inject private UserService userService;
+    @Inject private CommandText commandText;
+    @Inject private MediaUtils mediaUtils;
     @Inject Authentication authentication;
+    @Inject
+    private FileLoader fileLoader;
 
     @Override
     public String getBotUsername() {
@@ -49,72 +46,32 @@ public class TgConfig extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        SendMessage sendMessage =new SendMessage();
-        EditMessageText editMessageText = new EditMessageText();
-        if (update.hasCallbackQuery()){
-            CallbackQuery callbackQuery = update.getCallbackQuery();
-            String data = callbackQuery.getData();
-            Message message = callbackQuery.getMessage();
-            if (data.equals("menuCalRus")){
-                editMessageText.setText("salom menu");
-                editMessageText.setChatId(String.valueOf(message.getChatId()));
-                editMessageText.setMessageId(message.getMessageId());
-                editMessageText.setReplyMarkup(buttonUtils.oziqMarkup());
-                editMsg(editMessageText);
-            }else if (data.equals("food")){
-                sendMessage.setText("oziq ovqatlar");
-                sendMessage.setChatId(String.valueOf(message.getChatId()));
-                sendMsg(sendMessage);
+
+        if (update.hasMessage()) {
+            if (update.getMessage().getText().equals("/start")) {
+                sendMsg(commandText.start(update));
             }
-// else
-//                if (data.equals("food")){
-//                sendMessage.setReplyMarkup(buttonUtils.oziqMarkup());
-//                sendMessage.setChatId(String.valueOf(message.getChatId()));
-//                sendMsg(sendMessage);
-//            }else if (data.equals("noFood")){
-//                sendMessage.setReplyMarkup(buttonUtils.oziqMarkup());
-//                sendMessage.setChatId(String.valueOf(message.getChatId()));
-//            }
-        }else if (update.getMessage().getText().equals("/start")){
-            String id = update.getMessage().getFrom().getId().toString();
+        }else if (update.hasCallbackQuery()){
+            String data = update.getCallbackQuery().getData();
+            if (data.equals("menuCalRus")){
+                editMsg(commandText.lang(update));
+            }else if (data.equals("food")){
+                sendMedia(mediaUtils.photo(update));
 
 
-            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
-            sendMessage.setText("assalomu alaykum");
-            sendMessage.setReplyMarkup(buttonUtils.markup());
-            sendMsg(sendMessage);
 
-            authentication.begin();
-            userService.createUser(id, update.getMessage().getFrom().getFirstName(), update.getMessage().getFrom().getLastName(), update.getMessage().getFrom().getUserName());
-            authentication.end();
+            }else if (data.startsWith("Image#")){
+                editMedia(mediaUtils.edit(update));
 
-
+//
+            }
         }
-//        else if (update.getMessage().getText().equals("Руский")){
-//            sendMessage.setText("Здравствуйте");
-//            sendMessage.setChatId(String.valueOf(update.getMessage().getChatId()));
-//            authentication.begin();
-//            foodService.addFood(update.getMessage().getText());
-//            authentication.end();
-//            sendMessage.setReplyMarkup(buttonUtils.markup());
-//            sendMsg(sendMessage);
-//        }else if (update.getMessage().getText().equals("Узбекский")){
-//            authentication.begin();
-//            for (Foods test : foodService.getFood()){
-//
-//                sendMessage.setText("Assalomu alaykum " +
-//                        "fayillar " + test.getId());
-//                sendMessage.setReplyMarkup(keybord.markups());
-//                sendMsg(sendMessage);
-//            }
-//            authentication.end();
-//
-//        }
-//
-//      sendMsg(utils.message(update.getMessage().getText(), update.getMessage().getChatId().toString()));
-
-
     }
+
+
+
+
+
 
     public void sendMsg(SendMessage sendMessage){
         try {
@@ -135,6 +92,20 @@ public class TgConfig extends TelegramLongPollingBot {
     public void sendPhoto(SendPhoto sendPhoto){
         try {
             execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendMedia(SendMediaGroup sendMediaGroup){
+        try {
+            execute(sendMediaGroup);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+    public void editMedia(EditMessageMedia editMessageMedia){
+        try {
+            execute(editMessageMedia);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

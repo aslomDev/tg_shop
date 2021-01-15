@@ -83,7 +83,124 @@ public class ButtonUtils {
     ///
 
 
+/////
 
+    public InlineKeyboardButton key1(){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("keyingisi");
+        button.setCallbackData("keyin");
+        return button;
+    }
+
+
+    public InlineKeyboardButton key2(){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("oldingisi");
+        button.setCallbackData("oldin");
+        return button;
+    }
+
+    public List<InlineKeyboardButton> key3(){
+        List<InlineKeyboardButton> row = new LinkedList<>();
+        row.add(key1());
+        row.add(key2());
+        return row;
+    }
+    public List<List<InlineKeyboardButton>> key4(){
+        List<List<InlineKeyboardButton>> rows = new LinkedList<>();
+        rows.add(key3());
+        return rows;
+    }
+
+    public InlineKeyboardMarkup keyMarkup(){
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(key4());
+        return markup;
+    }
+
+    ////
+
+
+
+
+    //// buttons
+
+    public InlineKeyboardButton but1(){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("Next");
+        button.setCallbackData("Image#" + 2);
+        return button;
+    }
+
+    public InlineKeyboardButton but2(){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("Prev");
+        button.setCallbackData("Image#" + 0);
+        return button;
+    }
+
+
+    public List<InlineKeyboardButton> addBut(){
+        List<InlineKeyboardButton> row = new LinkedList<>();
+        row.add(but1());
+        row.add(but2());
+        return row;
+    }
+
+    public List<List<InlineKeyboardButton>> block(){
+        List<List<InlineKeyboardButton>> rows = new LinkedList<>();
+        rows.add(addBut());
+        return rows;
+    }
+
+
+    public InlineKeyboardMarkup butMarkup(){
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(block());
+        return markup;
+    }
+
+
+    ////
+
+
+    ////edit Buttons
+
+    public InlineKeyboardButton edBut1(String index){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("Next");
+        button.setCallbackData("Image#" +  (Integer.parseInt(index) + 1));
+        return button;
+    }
+
+    public InlineKeyboardButton edBut2(String index){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("Prev");
+        button.setCallbackData("Image#" + (Integer.parseInt(index) - 1));
+        return button;
+    }
+
+    public List<InlineKeyboardButton> addEdBut(String index){
+        List<InlineKeyboardButton> row = new LinkedList<>();
+        row.add(edBut1(index));
+        row.add(edBut2(index));
+        return row;
+    }
+
+    public List<List<InlineKeyboardButton>> edblock(String index){
+        List<List<InlineKeyboardButton>> rows = new LinkedList<>();
+        rows.add(addEdBut(index));
+        return rows;
+    }
+
+
+    public InlineKeyboardMarkup edbutMarkup(String index){
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(edblock(index));
+        return markup;
+    }
+
+    /////
 
 
 
